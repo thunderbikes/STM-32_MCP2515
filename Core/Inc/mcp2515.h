@@ -237,17 +237,12 @@ typedef struct {
     CANINTF CANINTF_RXnIF;
 } RXBn_REGS;
 
-// Define the arrays with fixed sizes
-const TXBn_REGS TXB[N_TXBUFFERS] = {
-    {MCP_TXB0CTRL, MCP_TXB0SIDH, MCP_TXB0DATA}, // Replace with actual initial values
-    {MCP_TXB1CTRL, MCP_TXB1SIDH, MCP_TXB1DATA}, // Replace with actual initial values
-    {MCP_TXB2CTRL, MCP_TXB2SIDH, MCP_TXB2DATA}  // Replace with actual initial values
-};
-
-const RXBn_REGS RXB[N_RXBUFFERS] = {
-    {MCP_RXB0CTRL, MCP_RXB0SIDH, MCP_RXB0DATA, CANINTF_RX0IF}, // Replace with actual initial values
-    {MCP_RXB1CTRL, MCP_RXB1SIDH, MCP_RXB1DATA, CANINTF_RX1IF}  // Replace with actual initial values
-};
+//For writing to cnabus
+//const TXBn_REGS TXB[N_TXBUFFERS] = {
+//    {MCP_TXB0CTRL, MCP_TXB0SIDH, MCP_TXB0DATA}, // Replace with actual initial values
+//    {MCP_TXB1CTRL, MCP_TXB1SIDH, MCP_TXB1DATA}, // Replace with actual initial values
+//    {MCP_TXB2CTRL, MCP_TXB2SIDH, MCP_TXB2DATA}  // Replace with actual initial values
+//};
 
 typedef struct {
     uint8_t SPICS;
@@ -257,27 +252,27 @@ typedef struct {
 
 
 CAN_ERROR MCP2515_setMode(MCP2515 *self, const CANCTRL_REQOP_MODE mode);
-void MCP2515_init(MCP2515 *mcp, const uint8_t _CS, const uint32_t _SPI_CLOCK, void * _SPI);
-CAN_ERROR MCP2515_reset();
-CAN_ERROR setConfigMode();
-CAN_ERROR setListenOnlyMode();
-CAN_ERROR setSleepMode();
-CAN_ERROR setLoopbackMode();
-CAN_ERROR setNormalMode();
-CAN_ERROR set_bitrate_125kbps();
-CAN_ERROR setFilterMask(const MASK num, const bool ext, const uint32_t ulData);
-CAN_ERROR setFilter(const RXF num, const bool ext, const uint32_t ulData);
-CAN_ERROR readMessageInternal(const RXBn rxbn, struct can_frame *frame);
-CAN_ERROR readMessage(struct can_frame *frame);
-uint8_t getStatus();
+void MCP2515_init(MCP2515 *mcp, const uint8_t _CS, const uint32_t _SPI_CLOCK);
+CAN_ERROR MCP2515_reset(SPI_HandleTypeDef* hspi1);
+CAN_ERROR setConfigMode(SPI_HandleTypeDef* hspi1);
+CAN_ERROR setListenOnlyMode(SPI_HandleTypeDef* hspi1);
+CAN_ERROR setSleepMode(SPI_HandleTypeDef* hspi1);
+CAN_ERROR setLoopbackMode(SPI_HandleTypeDef* hspi1);
+CAN_ERROR setNormalMode(SPI_HandleTypeDef* hspi1);
+CAN_ERROR set_bitrate_125kbps(SPI_HandleTypeDef* hspi1);
+CAN_ERROR setFilterMask(const MASK num, const bool ext, const uint32_t ulData, SPI_HandleTypeDef* hspi1);
+CAN_ERROR setFilter(const RXF num, const bool ext, const uint32_t ulData, SPI_HandleTypeDef* hspi1);
+CAN_ERROR readMessageInternal(const RXBn rxbn, struct can_frame *frame, SPI_HandleTypeDef* hspi1);
+CAN_ERROR readMessage(struct can_frame *frame, SPI_HandleTypeDef* hspi1);
+uint8_t getStatus(SPI_HandleTypeDef* hspi1);
 void prepareId(uint8_t *buffer, const bool ext, const uint32_t id);
 void startSPI(void);
 void endSPI(void);
-uint8_t readRegister(const REGISTER reg);
-void readRegisters(const REGISTER reg, uint8_t values[], const uint8_t n);
-void setRegister(const REGISTER reg, const uint8_t value);
-void setRegisters(const REGISTER reg, const uint8_t values[], const uint8_t n);
-void modifyRegister(const REGISTER reg, const uint8_t mask, const uint8_t data);
+uint8_t readRegister(const REGISTER reg, SPI_HandleTypeDef* hspi1);
+void readRegisters(const REGISTER reg, uint8_t values[], const uint8_t n, SPI_HandleTypeDef* hspi1);
+void setRegister(const REGISTER reg, const uint8_t value, SPI_HandleTypeDef* hspi1);
+void setRegisters(const REGISTER reg, const uint8_t values[], const uint8_t n, SPI_HandleTypeDef* hspi1);
+void modifyRegister(const REGISTER reg, const uint8_t mask, const uint8_t data, SPI_HandleTypeDef* hspi1);
 
 #endif // MCP2515_H
 
