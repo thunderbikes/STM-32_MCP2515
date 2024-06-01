@@ -271,8 +271,13 @@ CAN_ERROR readMessageInternal(const RXBn rxbn, struct can_frame *frame);
 CAN_ERROR readMessage(struct can_frame *frame);
 uint8_t getStatus();
 void prepareId(uint8_t *buffer, const bool ext, const uint32_t id);
-
-
+void startSPI(void);
+void endSPI(void);
+uint8_t readRegister(const REGISTER reg);
+void readRegisters(const REGISTER reg, uint8_t values[], const uint8_t n);
+void setRegister(const REGISTER reg, const uint8_t value);
+void setRegisters(const REGISTER reg, const uint8_t values[], const uint8_t n);
+void modifyRegister(const REGISTER reg, const uint8_t mask, const uint8_t data);
 
 #endif // MCP2515_H
 

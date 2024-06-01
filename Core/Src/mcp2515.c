@@ -276,3 +276,59 @@ void prepareId(uint8_t *buffer, const bool ext, const uint32_t id)
         buffer[MCP_EID8] = 0;
     }
 }
+void startSPI(void)
+{
+	HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET); //start SPI communication
+}
+
+void endSPI(void)
+{
+	HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET); //end SPI communication
+}
+uint8_t readRegister(const REGISTER reg)
+{
+	uint8_t ret;
+	startSPI();
+	HAL_SPI_Transmit(&hspi1, &INSTRUCTION_READ, 1, HAL_MAX_DELAY); //send instruction
+	HAL_SPI_Transmit(&hspi1, &reg, 1, HAL_MAX_DELAY); //send register
+	HAL_SPI_Receive(&hspi1, &ret, 1, HAL_MAX_DELAY); //receive data
+	endSPI();
+	return ret;
+}
+void readRegisters(const REGISTER reg, uint8_t values[], const uint8_t n)
+{
+	startSPI();
+	HAL_SPI_Transmit(&hspi1, &INSTRUCTION_READ, 1, HAL_MAX_DELAY); //send instruction
+	HAL_SPI_Transmit(&hspi1, &reg, 1, HAL_MAX_DELAY); //send register
+	for (uint8_t i=0; i<n; i++){
+		HAL_SPI_Receive(&hspi1, &values[i], 1, HAL_MAX_DELAY); //receive data
+	}
+	endSPI();
+}
+void setRegister(const REGISTER reg, const uint8_t value)
+{
+	startSPI();
+	HAL_SPI_Transmit(&hspi1, &INSTRUCTION_WRITE, 1, HAL_MAX_DELAY); //send instruction
+	HAL_SPI_Transmit(&hspi1, &reg, 1, HAL_MAX_DELAY); //send register
+	HAL_SPI_Transmit(&hspi1, &value, 1, HAL_MAX_DELAY); //send value
+	endSPI();
+}
+void setRegisters(const REGISTER reg, const uint8_t values[], const uint8_t n)
+{
+	startSPI();
+	HAL_SPI_Transmit(&hspi1, &INSTRUCTION_WRITE, 1, HAL_MAX_DELAY); //send instruction
+	HAL_SPI_Transmit(&hspi1, &reg, 1, HAL_MAX_DELAY); //send register
+	for (uint8_t i=0; i<n; i++){
+		HAL_SPI_Transmit(&hspi1, &values[i], 1, HAL_MAX_DELAY); //receive data
+	}
+	endSPI();
+}
+void modifyRegister(const REGISTER reg, const uint8_t mask, const uint8_t data)
+{
+	startSPI();
+	HAL_SPI_Transmit(&hspi1, &INSTRUCTION_BITMOD, 1, HAL_MAX_DELAY); //send instruction
+	HAL_SPI_Transmit(&hspi1, &reg, 1, HAL_MAX_DELAY); //send register
+	HAL_SPI_Transmit(&hspi1, &mask, 1, HAL_MAX_DELAY); //send value
+	HAL_SPI_Transmit(&hspi1, &data, 1, HAL_MAX_DELAY); //send value
+	endSPI();
+}
