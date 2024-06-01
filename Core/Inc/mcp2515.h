@@ -251,7 +251,7 @@ typedef struct {
 } MCP2515;
 
 
-CAN_ERROR MCP2515_setMode(MCP2515 *self, const CANCTRL_REQOP_MODE mode);
+CAN_ERROR setMode(const CANCTRL_REQOP_MODE mode, SPI_HandleTypeDef* hspi1);
 void MCP2515_init(MCP2515 *mcp, const uint8_t _CS, const uint32_t _SPI_CLOCK);
 CAN_ERROR MCP2515_reset(SPI_HandleTypeDef* hspi1);
 CAN_ERROR setConfigMode(SPI_HandleTypeDef* hspi1);

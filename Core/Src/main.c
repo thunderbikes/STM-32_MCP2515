@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "mcp2515.h"
+#include "can.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -41,6 +42,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
+struct can_frame can_msg;
 
 /* USER CODE BEGIN PV */
 
@@ -89,6 +91,20 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
+  //MCP2515 mcp;
+  //MCP2515_init(mcp, _CS, _SPI_CLOCK);
+  if(MCP2515_reset(&hspi1) != ERROR_OK)
+  {
+	  //shutdown bike
+  }
+  if (set_bitrate_125kbps(&hspi1) != ERROR_OK)
+  {
+	  //shutdown bike
+  }
+  if (setMode(CANCTRL_REQOP_NORMAL, &hspi1) != ERROR_OK)
+  {
+	  //shutdown bike
+  }
 
   /* USER CODE END 2 */
 
@@ -96,12 +112,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  startSPI();
-	  endSPI();
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
+	  if (readMessage(&can_msg, &hspi1) == ERROR_OK)
+	  {
+		 //we are reading the message here
+	  }
   }
   /* USER CODE END 3 */
 }
