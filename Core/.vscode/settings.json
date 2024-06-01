@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "mcp2515.h": "c",
+        "main.h": "c"
+    }
+}
